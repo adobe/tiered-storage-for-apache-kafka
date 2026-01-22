@@ -176,7 +176,11 @@ public class AzureBlobStorageConfig extends AbstractConfig {
 
     String connectionString() {
         final Password connectionString = getPassword(AZURE_CONNECTION_STRING_CONFIG);
-        return connectionString == null ? null : connectionString.value();
+        if (connectionString == null) {
+            final String envConnectionString = System.getenv("AZURE_CONNECTION_STRING");
+            return envConnectionString != null && !envConnectionString.isEmpty() ? envConnectionString : null;
+        }
+        return connectionString.value();
     }
 
     int uploadBlockSize() {
